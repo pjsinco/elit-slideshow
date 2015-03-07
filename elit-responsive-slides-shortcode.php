@@ -33,17 +33,27 @@ function elit_responsive_slides_shortcode( $atts ) {
   $ids = explode( ',', $a['ids'] );
 
   $output  = '<div class="elit-slideshow">';
+  $output .= '<div class="elit-slideshow__wrapper">';
   $output .= '<ul class="elit-slideshow__list" id="elit-slideshow">';
   
   foreach ( $ids as $id ) {
     $attachment = get_post( $id );
     $image_url = wp_get_attachment_image_src( $id, 'elit-large', false ); 
+
     $output .= '<li class="elit-slideshow__list-item">';
     $output .= '<img class="image__img elit-slideshow__img" src="' . $image_url[0] .  '" />';
+    $output .= '<p class="elit-slideshow__caption">';
+    $output .= $attachment->post_excerpt;
+    $output .= sprintf(
+      ' <small>(%s)</small>', 
+      get_post_meta( $attachment->ID, 'elit_image_credit', true )
+    );
+    $output .= '</p>';
     $output .= '</li>';
 
   }
   $output .= "</ul>";
+  $output .= "</div>";
   $output .= "</div>";
 
 
@@ -55,12 +65,12 @@ function elit_responsive_slides_shortcode( $atts ) {
       $script  = '<script>';
       $script .= 'jQuery(function() {';
       $script .= 'jQuery(\'#elit-slideshow\').responsiveSlides({';
-      $script .= 'auto: ' . $a['auto'] . ',';
-      //$script .= 'auto: true,';
+      //$script .= 'auto: ' . $a['auto'] . ',';
+      $script .= 'auto: false,';
       $script .= 'timeout: ' . $a['timeout'] . ',';
       //$script .= 'timeout: 4000,';
-      $script .= 'pager: ' . $a['pager'] . ',';
-      //$script .= 'pager: true,';
+      //$script .= 'pager: ' . $a['pager'] . ',';
+      $script .= 'pager: true,';
       $script .= 'nav: ' . $a['nav'] . ',';
       //$script .= 'maxwidth: ' . $a['maxwidth'] . ',';
       $script .= 'maxwidth: "728"';
