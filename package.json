@@ -1,0 +1,25 @@
+{
+  "name": "elit-responsive-slides",
+  "version": "0.0.1",
+  "description": "Pluging for displaying slideshows.",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pjsinco/elit-slideshow.git"
+  },
+  "author": "pjs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pjsinco/elit-slideshow/issues"
+  },
+  "homepage": "https://github.com/pjsinco/elit-slideshow",
+  "devDependencies": {
+    "grunt": "^0.4.5"
+  }
+}
