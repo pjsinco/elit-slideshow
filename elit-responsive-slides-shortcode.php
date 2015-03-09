@@ -7,7 +7,6 @@
  */
 
 function elit_responsive_slides_shortcode( $atts ) {
-
   $a = shortcode_atts( 
     array(
       'ids' => '',
@@ -29,9 +28,7 @@ function elit_responsive_slides_shortcode( $atts ) {
     ),
     $atts
   );
-
   $ids = explode( ',', $a['ids'] );
-
   $output  = '<div class="elit-slideshow">';
   $output .= '<div class="elit-slideshow__wrapper">';
   $output .= '<ul class="elit-slideshow__list" id="elit-slideshow">';
@@ -63,7 +60,7 @@ function elit_responsive_slides_shortcode( $atts ) {
     'wp_footer', 
     function() use ( $a ) {
       $script  = '<script>';
-      $script .= 'jQuery(function() {';
+      $script .= 'jQuery(document).ready(function() {';
       $script .= 'jQuery(\'#elit-slideshow\').responsiveSlides({';
       //$script .= 'auto: ' . $a['auto'] . ',';
       $script .= 'auto: false,';
@@ -78,7 +75,8 @@ function elit_responsive_slides_shortcode( $atts ) {
       $script .= '});';
       $script .= '</script>';
       echo $script;
-    } 
+    },
+    20
   );
   return $output;
 }

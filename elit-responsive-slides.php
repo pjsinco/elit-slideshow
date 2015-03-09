@@ -32,9 +32,9 @@ class Elit_Responsive_Slides {
   }
 
   public function add_styles() {
-    if ( is_admin() ) { 
-      return;
-    }
+    //if ( is_admin() ) { 
+      //return;
+    //}
   }
 
   public function load_shortcode() {
@@ -42,4 +42,6 @@ class Elit_Responsive_Slides {
   }
 } // eoc
 
-$elit_responsive_slider = new Elit_Responsive_Slides();
+//$elit_responsive_slider = new Elit_Responsive_Slides();
+$GLOBALS['elit-slideshow'] = new Elit_Responsive_Slides();
+
