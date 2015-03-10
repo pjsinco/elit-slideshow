@@ -5,7 +5,7 @@ module.exports = function( grunt ) {
     sass: {
       dist: {
         files: {
-          'css/elit-responsive-slides.css': 'elit-responsive-slides.scss'
+          'css/elit-slideshow.css': 'elit-slideshow.scss'
         }
       }
     }
