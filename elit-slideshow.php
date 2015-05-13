@@ -20,33 +20,26 @@ if ( is_admin() ) {
 }
 
 class Elit_Slideshow {
-
   private $ids;      // array
   private $features; // array
 
 
   public function __construct() {
-
-    // ResponsiveSlides.js options
+    // Owl Carouseljs options
     $this->features = array(
-      'auto'     => false,
-      'speed'    => 500,   // not user changeable
-      'timeout'  => 4000,  // not user changeable
-      'pager'    => false,
-      'nav'      => true,
-      'random'   => false,
-      'pause'    => false,
-      'maxwidth' => '768', // not user changeable
+      'singleItem' => true,
+      'slideSpeed' => 350,   // not user changeable
+      'paginationSpeed' => 350,   // not user changeable
+      'transitionStyle' => 'fade',   // not user changeable
+      'addClassActive' => true,   // not user changeable
     );
 
     add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
     add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ) );
-
     add_action( 
       'add_meta_boxes', 
       array( $this, 'elit_add_featured_slideshow_meta_box' )
     );
-
     add_action( 
       'save_post', 
       array( $this, 'elit_save_featured_slideshow_meta' )
@@ -63,8 +56,8 @@ class Elit_Slideshow {
     }
 
     wp_register_script( 
-      'responsive-slides-js', 
-      plugin_dir_url( __FILE__ ) . 'js/responsiveslides.min.js',
+      'owl-carousel-js', 
+      plugin_dir_url( __FILE__ ) . 'inc/owl-carousel/owl.carousel.min.js',
       array( 'jquery' ),
       false,
       true
@@ -79,6 +72,30 @@ class Elit_Slideshow {
     wp_register_style(
       'elit-slideshow-style',
       plugin_dir_url( __FILE__ ) . 'css/elit-slideshow.css',
+      array(),
+      false,
+      'screen'
+    );
+
+    wp_register_style(
+      'owl-carousel-theme',
+      plugin_dir_url( __FILE__ ) . 'inc/owl-carousel/owl.theme.css',
+      array(),
+      false,
+      'screen'
+    );
+
+    wp_register_style(
+      'owl-carousel-transitions',
+      plugin_dir_url( __FILE__ ) . 'inc/owl-carousel/owl.transitions.css',
+      array(),
+      false,
+      'screen'
+    );
+
+    wp_register_style(
+      'owl-carousel',
+      plugin_dir_url( __FILE__ ) . 'inc/owl-carousel/owl.carousel.css',
       array(),
       false,
       'screen'
@@ -98,15 +115,17 @@ class Elit_Slideshow {
       $this->set_features( $a['features'] );
     }
 
-    $output  = '<div class="elit-slideshow">';
-    $output .= '<div class="elit-slideshow__wrapper">';
-    $output .= '<ul class="elit-slideshow__list" id="elit-slideshow">';
+    //$output  = '<div class="elit-slideshow">';
+    $output  = '<div class="elit-slideshow__wrapper">';
+    $output .= '<a class=\'rslides_nav rslides1_nav prev\'>Prev</a>';
+    $output .= '<a class=\'rslides_nav rslides1_nav next\'>Next</a>';
+    $output .= '<div class="owl-carousel" id="elit-slideshow">';
     
     foreach ( $this->ids as $id ) {
       $attachment = get_post( $id );
-      $image_url = wp_get_attachment_image_src( $id, 'elit-large', false ); 
+      $image_url = wp_get_attachment_image_src( $id, 'elit-super', false ); 
   
-      $output .= '<li class="elit-slideshow__list-item">';
+      $output .= '<div class="elit-slideshow__item">';
       $output .= '<img class="image__img elit-slideshow__img" src="' . $image_url[0] .  '" />';
       $output .= '<p class="elit-slideshow__caption">';
       $output .= $attachment->post_excerpt;
@@ -115,15 +134,18 @@ class Elit_Slideshow {
         get_post_meta( $attachment->ID, 'elit_image_credit', true )
       );
       $output .= '</p>';
-      $output .= '</li>';
+      $output .= '</div>';
   
     }
-    $output .= "</ul>";
+    //$output .= "</div>";
     $output .= "</div>";
     $output .= "</div>";
 
-    wp_enqueue_script( 'responsive-slides-js' );
+    wp_enqueue_script( 'owl-carousel-js' );
     wp_enqueue_style( 'elit-slideshow-style' );
+    wp_enqueue_style( 'owl-carousel-theme' );
+    wp_enqueue_style( 'owl-carousel-transitions' );
+    wp_enqueue_style( 'owl-carousel' );
     add_action( 'wp_footer', array( $this, 'create_script' ), 20 );
 
     return $output;
@@ -144,9 +166,16 @@ class Elit_Slideshow {
   public function create_script() {
     $script  = '<script>';
     $script .= 'jQuery(document).ready(function() {';
-    $script .= 'jQuery(\'#elit-slideshow\').responsiveSlides(';
+    $script .= 'var owl = jQuery(\'#elit-slideshow\');';
+    $script .= 'owl.owlCarousel(';
     $script .= json_encode( $this->features );
     $script .= ');';
+    $script .= "jQuery('.next').click(function() {";
+    $script .= "  owl.trigger('owl.next');";
+    $script .= '});';
+    $script .= "jQuery('.prev').click(function() {";
+    $script .= "  owl.trigger('owl.prev');";
+    $script .= '});';
     $script .= '});';
     $script .= '</script>';
 
@@ -184,7 +213,7 @@ class Elit_Slideshow {
     <?php 
   }
 
-  public function elit_save_featured_slideshow_meta( $post_id ) {
+  function elit_save_featured_slideshow_meta( $post_id  ) {
     global $post;
     // verify the nonce
     if ( !isset( $_POST['elit_featured_slideshow_nonce'] ) || 
@@ -225,10 +254,7 @@ class Elit_Slideshow {
       delete_post_meta( $post_id, $meta_key, $meta_value );
     }
   }
-
-
-  
 } // eoc
 
-$elit_responsive_slider = new Elit_Slideshow();
+$elit_slideshow = new Elit_Slideshow();
 $GLOBALS['elit-slideshow'] = new Elit_Slideshow();

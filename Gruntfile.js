@@ -1,18 +1,33 @@
-module.exports = function( grunt ) {
+module.exports = function(grunt) {
 
   grunt.initConfig({
 
+    autoprefixer: {
+      css: {
+        src: 'css/**/*.css'
+      }
+    },
+
     sass: {
-      dist: {
+      dev: {
         files: {
-          'css/elit-slideshow.css': 'elit-slideshow.scss'
+          'css/elit-slideshow.css': 'scss/elit-slideshow.scss'
         }
       }
-    }
+    },
+
+    watch: {
+      styles: {
+        files: ['scss/**/*.scss'],
+        tasks: ['sass:dev', 'autoprefixer:css'] 
+      }
+    } // watch
   }); // initConfig
   
-  grunt.loadNpmTasks( 'grunt-contrib-sass' );
-  grunt.registerTask( 'default', ['sass'] );
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks("grunt-autoprefixer");
+  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.registerTask( 'default', ['watch'] );
 
 }; // exports
 
