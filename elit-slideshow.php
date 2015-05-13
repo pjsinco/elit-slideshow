@@ -9,12 +9,24 @@
  * License: GPL2
  */
 
+function call_elit_slideshow() {
+  $GLOBALS['elit-slideshow'] = new Elit_Slideshow();
+}
+
+if ( is_admin() ) {
+  // load metabox
+  add_action( 'load-post.php' , 'call_elit_slideshow' );
+  add_action( 'load-post-new.php' , 'call_elit_slideshow' );
+}
+
 class Elit_Slideshow {
 
   private $ids;      // array
   private $features; // array
 
+
   public function __construct() {
+
     // ResponsiveSlides.js options
     $this->features = array(
       'auto'     => false,
@@ -29,7 +41,20 @@ class Elit_Slideshow {
 
     add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
     add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ) );
+
+    add_action( 
+      'add_meta_boxes', 
+      array( $this, 'elit_add_featured_slideshow_meta_box' )
+    );
+
+    add_action( 
+      'save_post', 
+      array( $this, 'elit_save_featured_slideshow_meta' )
+    );
+
     add_shortcode( 'elit-slideshow', array( $this, 'elit_slideshow_shortcode' ) );
+    global $wp_filter;
+    //d( $wp_filter);
   }
 
   public function register_scripts() {
@@ -97,8 +122,6 @@ class Elit_Slideshow {
     $output .= "</div>";
     $output .= "</div>";
 
-    //$this->create_script();
-  
     wp_enqueue_script( 'responsive-slides-js' );
     wp_enqueue_style( 'elit-slideshow-style' );
     add_action( 'wp_footer', array( $this, 'create_script' ), 20 );
@@ -130,7 +153,82 @@ class Elit_Slideshow {
     echo $script;
   }
 
+  /**
+   * Meta box for setting a featured slideshow, one that appears
+   * above the headline in the story.
+   *
+   */
+  
+  function elit_featured_slideshow_meta_box_setup() {
+  }
+  
+  function elit_add_featured_slideshow_meta_box() {
+    add_meta_box(
+      'elit-featured-slideshow',
+      esc_html( 'Featured slideshow' ),
+      array( $this, 'elit_featured_slideshow_meta_box' ),
+      'post',
+      'side',
+      'low'
+    );
+  }
+  
+  function elit_featured_slideshow_meta_box( $object, $box ) {
+    wp_nonce_field( basename(__FILE__), 'elit_featured_slideshow_nonce' );
+    ?>
+    <p>
+      <label for="widefat">Enter the shortcode for a featured slideshow, one that appears above the headline.</label>
+      <br />
+      <textarea class="widefat"  name="elit-featured-slideshow" id="elit-featured-slideshow" rows="5"><?php echo esc_attr( get_post_meta( $object->ID, 'elit_featured_slideshow', true ) ); ?></textarea>
+    </p>
+    <?php 
+  }
+
+  public function elit_save_featured_slideshow_meta( $post_id ) {
+    global $post;
+    // verify the nonce
+    if ( !isset( $_POST['elit_featured_slideshow_nonce'] ) || 
+      !wp_verify_nonce( $_POST['elit_featured_slideshow_nonce'], basename( __FILE__ ) )
+    ) {
+        // instead of just returning, we return the $post_id
+        // so other hooks can continue to use it
+        return $post_id;
+    }
+  
+    // get post type object
+    $post_type = get_post_type_object( $post->post_type );
+  
+    // if the user has permission to edit the post
+    if ( !current_user_can( $post_type->cap->edit_post, $post_id ) ) {
+      return $post_id;
+    }
+  
+    // get the posted data and sanitize it
+    $new_meta_value = 
+      ( isset($_POST['elit-featured-slideshow'] ) ? $_POST['elit-featured-slideshow'] : '' );
+
+  
+    // set the meta key
+    $meta_key = 'elit_featured_slideshow';
+  
+    // get the meta value as a string
+    $meta_value = get_post_meta( $post_id, $meta_key, true);
+  
+    // if a new meta value was added and there was no previous value, add it
+    if ( $new_meta_value && $meta_value == '' ) {
+      add_post_meta( $post_id, $meta_key, $new_meta_value, true);
+    } elseif ($new_meta_value && $new_meta_value != $meta_value ) {
+      // so the new meta value doesn't match the old one, so we're updating
+      update_post_meta( $post_id, $meta_key, $new_meta_value );
+    } elseif ( $new_meta_value == '' && $meta_value) {
+      // if there is no new meta value but an old value exists, delete it
+      delete_post_meta( $post_id, $meta_key, $meta_value );
+    }
+  }
+
+
+  
 } // eoc
 
-//$elit_responsive_slider = new Elit_Slideshow();
+$elit_responsive_slider = new Elit_Slideshow();
 $GLOBALS['elit-slideshow'] = new Elit_Slideshow();
