@@ -14,4 +14,5 @@
     * WSJ [Slideshow: All the Presidents’ Libraries](http://www.wsj.com/articles/slideshow-all-the-presidents-libraries-1431458992)
 
 
-
+###Thu May 14 08:49:45 2015 CDT
+* Sporting News: [slideshow](http://www.sportingnews.com/list/4644291-nascar-sprint-cup-standings-jimmie-johnson-aric-almirola-keselowski-logano-earnhardt-junior-kenseth-kurt-busch-kyle-hamlin/slide/323197)

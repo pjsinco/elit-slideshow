@@ -10,7 +10,7 @@
  */
 
 function call_elit_slideshow() {
-  $GLOBALS['elit-slideshow'] = new Elit_Slideshow();
+  //$GLOBALS['elit-slideshow'] = new Elit_Slideshow();
 }
 
 if ( is_admin() ) {
@@ -19,7 +19,7 @@ if ( is_admin() ) {
   add_action( 'load-post-new.php' , 'call_elit_slideshow' );
 }
 
-class Elit_Slideshow {
+class ElitSlideshow {
   private $ids;      // array
   private $features; // array
 
@@ -36,10 +36,10 @@ class Elit_Slideshow {
 
     add_action( 'wp_enqueue_scripts', array( $this, 'register_scripts' ) );
     add_action( 'wp_enqueue_scripts', array( $this, 'register_styles' ) );
-    add_action( 
-      'add_meta_boxes', 
-      array( $this, 'elit_add_featured_slideshow_meta_box' )
-    );
+    //add_action( 
+      //'add_meta_boxes', 
+      //array( $this, 'elit_add_featured_slideshow_meta_box' )
+    //);
     add_action( 
       'save_post', 
       array( $this, 'elit_save_featured_slideshow_meta' )
@@ -48,6 +48,14 @@ class Elit_Slideshow {
     add_shortcode( 'elit-slideshow', array( $this, 'elit_slideshow_shortcode' ) );
     global $wp_filter;
     //d( $wp_filter);
+  }
+
+  // instantantiate our an instance of our class
+  // http://wordpress.stackexchange.com/questions/70055/
+  //    best-way-to-initiate-a-class-in-a-wp-plugin
+  public function init() {
+    $class = __CLASS__;
+    new $class;
   }
 
   public function register_scripts() {
@@ -59,6 +67,14 @@ class Elit_Slideshow {
       'owl-carousel-js', 
       plugin_dir_url( __FILE__ ) . 'inc/owl-carousel/owl.carousel.min.js',
       array( 'jquery' ),
+      false,
+      true
+    );
+
+    wp_register_script( 
+      'elit-slideshow-js', 
+      plugin_dir_url( __FILE__ ) . 'js/elit-slideshow.js',
+      array( 'owl-carousel-js' ),
       false,
       true
     );
@@ -117,17 +133,17 @@ class Elit_Slideshow {
 
     //$output  = '<div class="elit-slideshow">';
     $output  = '<div class="elit-slideshow__wrapper">';
-    $output .= '<a class=\'rslides_nav rslides1_nav prev\'>Prev</a>';
-    $output .= '<a class=\'rslides_nav rslides1_nav next\'>Next</a>';
+    $output .= '<a class=\'elit-slideshow__nav prev\'>Prev</a>';
+    $output .= '<a class=\'elit-slideshow__nav elit-slideshow__next next\'>Next</a>';
     $output .= '<div class="owl-carousel" id="elit-slideshow">';
     
     foreach ( $this->ids as $id ) {
       $attachment = get_post( $id );
       $image_url = wp_get_attachment_image_src( $id, 'elit-super', false ); 
   
-      $output .= '<div class="elit-slideshow__item">';
+      $output .= "<div class=\"elit-slideshow__item\">";
       $output .= '<img class="image__img elit-slideshow__img" src="' . $image_url[0] .  '" />';
-      $output .= '<p class="elit-slideshow__caption">';
+      $output .= '<figcaption class="elit-slideshow__caption">';
       $output .= $attachment->post_excerpt;
       $output .= sprintf(
         ' <small>(%s)</small>', 
@@ -140,13 +156,17 @@ class Elit_Slideshow {
     //$output .= "</div>";
     $output .= "</div>";
     $output .= "</div>";
+//    $output .= "<div class='elit-slideshow__info'>";
+//    $output .= "<p class=\"elit-slideshow__caption\"></p>";
+//    $output .= "</div>";
 
     wp_enqueue_script( 'owl-carousel-js' );
+    wp_enqueue_script( 'elit-slideshow-js' );
     wp_enqueue_style( 'elit-slideshow-style' );
     wp_enqueue_style( 'owl-carousel-theme' );
     wp_enqueue_style( 'owl-carousel-transitions' );
     wp_enqueue_style( 'owl-carousel' );
-    add_action( 'wp_footer', array( $this, 'create_script' ), 20 );
+    //add_action( 'wp_footer', array( $this, 'create_script' ), 20 );
 
     return $output;
   }
@@ -167,9 +187,17 @@ class Elit_Slideshow {
     $script  = '<script>';
     $script .= 'jQuery(document).ready(function() {';
     $script .= 'var owl = jQuery(\'#elit-slideshow\');';
-    $script .= 'owl.owlCarousel(';
-    $script .= json_encode( $this->features );
-    $script .= ');';
+    $script .= 'owl.owlCarousel({';
+    $script .= 'singleItem: true,';
+    $script .= 'slideSpeed: 350,';
+    $script .= 'paginationSpeed: 350,';
+    $script .= 'transitionStyle: \'fade\',';
+    $script .= 'addClassActive: true,';
+    $script .= 'beforeMove: function() {';
+    //$script .= "$('.owl-item.active .elit-slideshow__caption').fadeToggle();";
+    $script .= '},';
+    //$script .= json_encode( $this->features );
+    $script .= '});';
     $script .= "jQuery('.next').click(function() {";
     $script .= "  owl.trigger('owl.next');";
     $script .= '});';
@@ -256,5 +284,7 @@ class Elit_Slideshow {
   }
 } // eoc
 
-$elit_slideshow = new Elit_Slideshow();
-$GLOBALS['elit-slideshow'] = new Elit_Slideshow();
+add_action( 'plugins_loaded', array( 'ElitSlideshow', 'init' ) );
+
+//$elit_slideshow = new Elit_Slideshow();
+//$GLOBALS['elit-slideshow'] = new Elit_Slideshow();
