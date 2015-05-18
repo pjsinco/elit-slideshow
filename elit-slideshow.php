@@ -51,6 +51,7 @@ function elit_featured_slideshow_cpt() {
     'capability_type' => 'post',
     'has_archive' => false,
     'hierarchical' => false,
+    'taxonomies' => array('category'),
     'rewrite' => array( 'slug' => 'featured-slideshow'),
     'supports' => array( 'revision', 'editor', 'title', 'author', 'thumbnail', 'comments', 'excerpt' ),
     //'register_meta_box_cb' => 'add_elit_slideshow_metaboxes'
@@ -253,7 +254,7 @@ class ElitSlideshow {
     
     foreach ( $this->ids as $id ) {
       $attachment = get_post( $id );
-      $image_url = wp_get_attachment_image_src( $id, 'elit-super', false ); 
+      $image_url = wp_get_attachment_image_src( $id, 'elit-large', false ); 
   
       $output .= "<div class=\"elit-slideshow__item\">";
       $output .= '<img class="image__img elit-slideshow__img" src="' . $image_url[0] .  '" />';
