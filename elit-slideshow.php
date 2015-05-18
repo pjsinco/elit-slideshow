@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Elit Slideshow
- * Plugin URI: 
+ * Plugin URI: https://github.com/pjsinco/elit-slideshow
  * Description: Slideshow plugin
- * Version: 0.0.1
+ * Version: 0.0.3
  * Author: Patrick Sinco
  * Author URI: 
  * License: GPL2
