@@ -1,14 +1,19 @@
 jQuery(document).ready(function($) {
 
+  // height of .elit-slideshow__item-title div
+  var compensateForTitle = 60;
+
+
   // see elit_add_no_fouc_snippet() in functions.php
   $('.no-fouc').removeClass('no-fouc');
 
   var updateControlsPosition = function() {
     var imageWidth = $('.elit-slideshow__img').width();
+    console.log(imageWidth);
     if (imageWidth <= maxWidth) {
       $('.elit-slideshow__nav')
         .each(function(index, elem) { 
-          $(this).css('top', (((imageWidth / 3) * 2) / 2 + 'px')); 
+          $(this).css('top', (((imageWidth / 3) * 2) / 2 + compensateForTitle + 'px')); 
         });
     }
   };
