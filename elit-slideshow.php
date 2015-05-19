@@ -76,7 +76,7 @@ class ElitSlideshow {
   public function add_meta_box() {
     add_meta_box(
       'elit-featured-slideshow',
-      esc_html( 'Featured slideshow' ),
+      esc_html( 'Featured slideshow shortcode' ),
       array( $this, 'render_meta_box_content' ),
       'post',
       'side',
@@ -88,7 +88,7 @@ class ElitSlideshow {
     wp_nonce_field( basename(__FILE__), 'elit_featured_slideshow_nonce' );
     ?>
     <p>
-      <label for="widefat">Enter the shortcode for a featured slideshow, one that appears above the headline.</label>
+      <label for="widefat">Ex.: [elit-slideshow ids="180298, 180291, 180265"]. The IDs are the image IDs to use in the slideshow.</label>
       <br />
       <textarea class="widefat"  name="elit-featured-slideshow" id="elit-featured-slideshow" rows="5"><?php echo esc_attr( get_post_meta( $object->ID, 'elit_featured_slideshow', true ) ); ?></textarea>
     </p>
