@@ -1,10 +1,17 @@
+%text-base {
+  margin-bottom: 1em;
+  font-size: 1em;
+  line-height: 1.4;
+  color: #808080;
+}
+
 %after {
   content: "";
   display: table;
   clear: both; 
 }
 
-%note-base {
+%tag-base {
   position: absolute;
   top: 4.375em; 
   display: block;
@@ -33,7 +40,16 @@
 
   &__wrapper {
     position: relative;
-    margin-bottom: 1em;
+    margin-bottom: 2em;
+  }
+
+  &__note-wrapper {
+    margin-bottom: 3em;
+  }
+
+  &__note {
+    @extend %text-base;
+    font-style: italic;
   }
 
   &__nav {
@@ -140,11 +156,7 @@
   }
   
   &__caption {
-    margin-bottom: 1em;
-    font-size: 1em;
-    line-height: 1.4;
-    color: #808080;
-
+    @extend %text-base;
     &:last-of-type {
       margin-bottom: 0;
     }
@@ -162,15 +174,15 @@
     color: #d0d0d0;
   }
   
-  &__note {
-    @extend %note-base; 
+  &__tag {
+    @extend %tag-base; 
 
     &--success {
-      @extend %note-base;
+      @extend %tag-base;
       background: green;
     }
     &--danger {
-      @extend %note-base;
+      @extend %tag-base;
       background: #ef3f23;
     }
   }

@@ -3,7 +3,7 @@
  * Plugin Name: Elit Slideshow
  * Plugin URI: https://github.com/pjsinco/elit-slideshow
  * Description: Slideshow plugin
- * Version: 0.0.3
+ * Version: 0.0.4
  * Author: Patrick Sinco
  * Author URI: 
  * License: GPL2
@@ -44,6 +44,7 @@ function elit_add_no_fouc_snippet() {
 class ElitSlideshow {
   private $ids;      // array
   private $features; // array
+  private $note; // array
 
   public function __construct() {
     // Owl Carouseljs options
@@ -195,13 +196,28 @@ class ElitSlideshow {
     );
   }
 
+  public function elit_filter_the_content($content) {
+    $note  = '<div class="elit-slideshow__note-wrapper">';
+    $note .= '<p class="elit-slideshow__note">' . $this->note;
+    $note .= '</p></div>';
+    return $note . $content;
+  }
+
   public function elit_slideshow_shortcode( $atts ) {
     $a = shortcode_atts( array( 
+      'note' => '',
       'ids' => array(), 
       'features' => array(), 
       ), $atts
     );
 
+    $this->note = $a['note'];
+    
+    // if we have a note, we're going to add it by filtering the_content
+    if (!empty($this->note)) {
+        add_filter('the_content', array($this, 'elit_filter_the_content'));
+    }
+    
     $this->ids = explode( ',', $a['ids'] );
 
     if ( !empty( $a['features'] ) ) {
@@ -235,6 +251,7 @@ class ElitSlideshow {
     wp_enqueue_script( 'owl-carousel-js' );
     wp_enqueue_script( 'elit-slideshow-js' );
     wp_enqueue_style( 'elit-slideshow-style' );
+
 
     return $output;
   }

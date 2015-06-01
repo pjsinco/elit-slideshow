@@ -16,3 +16,6 @@
 
 ###Thu May 14 08:49:45 2015 CDT
 * Sporting News: [slideshow](http://www.sportingnews.com/list/4644291-nascar-sprint-cup-standings-jimmie-johnson-aric-almirola-keselowski-logano-earnhardt-junior-kenseth-kurt-busch-kyle-hamlin/slide/323197)
+
+###Mon Jun  1 11:45:18 2015 CDT
+0.0.4 Add attribute to shortcode: note; style it;
