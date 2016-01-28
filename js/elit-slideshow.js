@@ -9,6 +9,12 @@ jQuery(document).ready(function($) {
 
   var updateControlsPosition = function() {
     var imageWidth = $('.elit-slideshow__img').width();
+    // Sometimes, event though this function is called 
+    // on the afterInit event, it doesn't catch the image
+    // size. So let's set it in those cases.
+    if (imageWidth === 0) {
+      imageWidth = 728; 
+    }
     console.log(imageWidth);
     if (imageWidth <= maxWidth) {
       $('.elit-slideshow__nav')
@@ -19,7 +25,7 @@ jQuery(document).ready(function($) {
   };
 
   var maxWidth = 728;
-  var owl = jQuery('#elit-slideshow');
+  var owl = $('#elit-slideshow');
   owl.owlCarousel({
     singleItem: true,
     slideSpeed: 350,
