@@ -69,7 +69,7 @@ class ElitSlideshow {
   // instantantiate our an instance of our class
   // http://wordpress.stackexchange.com/questions/70055/
   //    best-way-to-initiate-a-class-in-a-wp-plugin
-  public function init() {
+  public static function init() {
     $class = __CLASS__;
     new $class;
   }
