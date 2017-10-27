@@ -3,7 +3,7 @@
  * Plugin Name: Elit Slideshow
  * Plugin URI: https://github.com/pjsinco/elit-slideshow
  * Description: Slideshow plugin
- * Version: 0.0.4
+ * Version: 0.1.0
  * Author: Patrick Sinco
  * Author URI: 
  * License: GPL2
